@@ -6,6 +6,7 @@ import MoistureGauge from "@/components/MoistureGauge";
 import TrendChart from "@/components/TrendChart";
 import StatusCard from "@/components/StatusCard";
 import AlertNotification from "@/components/AlertNotification";
+import LogsheetExport from "@/components/LogsheetExport";
 import { useSiloData } from "@/hooks/useSiloData";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -15,7 +16,7 @@ interface DashboardProps {
 }
 
 const Dashboard = ({ userName, onLogout }: DashboardProps) => {
-  const { silo1, silo2, trendData, alerts, dismissAlert, MOISTURE_MIN, MOISTURE_MAX } = useSiloData();
+  const { silo1, silo2, trendData, alerts, dismissAlert, logData, MOISTURE_MIN, MOISTURE_MAX } = useSiloData();
 
   const getStatus = (moisture: number) => {
     if (moisture > MOISTURE_MAX) return 'danger';
@@ -165,6 +166,15 @@ const Dashboard = ({ userName, onLogout }: DashboardProps) => {
               <TrendChart data={trendData} type="temperature" />
             </TabsContent>
           </Tabs>
+        </section>
+
+        {/* Logsheet Export */}
+        <section>
+          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+            <Activity className="w-5 h-5 text-primary" />
+            Export Logsheet
+          </h2>
+          <LogsheetExport logData={logData} />
         </section>
 
         {/* Legend */}
