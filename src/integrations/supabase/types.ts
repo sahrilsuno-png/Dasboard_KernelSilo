@@ -14,7 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      logsheet_entries: {
+        Row: {
+          created_at: string
+          id: string
+          silo1_moisture: number
+          silo1_temp: number
+          silo2_moisture: number
+          silo2_temp: number
+          timestamp: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          silo1_moisture: number
+          silo1_temp: number
+          silo2_moisture: number
+          silo2_temp: number
+          timestamp?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          silo1_moisture?: number
+          silo1_temp?: number
+          silo2_moisture?: number
+          silo2_temp?: number
+          timestamp?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

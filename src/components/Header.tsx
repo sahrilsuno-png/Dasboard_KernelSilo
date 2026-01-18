@@ -1,16 +1,14 @@
 import { motion } from "framer-motion";
-import { Droplets, Menu, LogOut } from "lucide-react";
-import { AlertBadge } from "./AlertNotification";
-import { Button } from "./ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import { Palmtree, LogOut, Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 interface HeaderProps {
-  alertCount: number;
   userName?: string;
   onLogout?: () => void;
 }
 
-const Header = ({ alertCount, userName, onLogout }: HeaderProps) => {
+const Header = ({ userName, onLogout }: HeaderProps) => {
   return (
     <motion.header
       initial={{ opacity: 0, y: -20 }}
@@ -20,24 +18,21 @@ const Header = ({ alertCount, userName, onLogout }: HeaderProps) => {
       <div className="container flex h-16 items-center justify-between px-4">
         {/* Logo */}
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-primary/20">
-            <Droplets className="w-6 h-6 text-primary" />
+          <div className="p-2 rounded-xl bg-gradient-to-br from-palm-dark to-palm-light">
+            <Palmtree className="w-6 h-6 text-palm-gold" />
           </div>
           <div className="hidden sm:block">
-            <h1 className="text-lg font-bold text-gradient-primary">
-              Palm Kernel Monitor
+            <h1 className="text-lg font-bold bg-gradient-to-r from-palm-gold to-palm-light bg-clip-text text-transparent">
+              PKS Moisture Monitor
             </h1>
             <p className="text-xs text-muted-foreground">
-              Sistem Monitoring Moisture Silo
+              Pabrik Kelapa Sawit - Silo Control
             </p>
           </div>
         </div>
 
         {/* Mobile Menu */}
         <div className="flex items-center gap-4">
-          {/* Alert Badge */}
-          <AlertBadge count={alertCount} />
-
           {/* User Info */}
           {userName && (
             <div className="hidden sm:flex items-center gap-3">
@@ -65,13 +60,13 @@ const Header = ({ alertCount, userName, onLogout }: HeaderProps) => {
             </SheetTrigger>
             <SheetContent side="right" className="w-72 bg-card">
               <div className="flex flex-col gap-4 mt-8">
-                <div className="flex items-center gap-3 p-4 rounded-xl bg-secondary">
-                  <div className="p-2 rounded-full bg-primary/20">
-                    <Droplets className="w-5 h-5 text-primary" />
+                <div className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-br from-palm-dark/50 to-palm-light/30">
+                  <div className="p-2 rounded-full bg-palm-gold/20">
+                    <Palmtree className="w-5 h-5 text-palm-gold" />
                   </div>
                   <div>
                     <p className="font-semibold">{userName || 'Guest'}</p>
-                    <p className="text-xs text-muted-foreground">Operator</p>
+                    <p className="text-xs text-muted-foreground">Operator PKS</p>
                   </div>
                 </div>
                 {onLogout && (

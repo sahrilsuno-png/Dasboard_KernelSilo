@@ -5,7 +5,6 @@ import SiloVisualization from "@/components/SiloVisualization";
 import MoistureGauge from "@/components/MoistureGauge";
 import TrendChart from "@/components/TrendChart";
 import StatusCard from "@/components/StatusCard";
-import AlertNotification from "@/components/AlertNotification";
 import LogsheetExport from "@/components/LogsheetExport";
 import { useSiloData } from "@/hooks/useSiloData";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -16,7 +15,7 @@ interface DashboardProps {
 }
 
 const Dashboard = ({ userName, onLogout }: DashboardProps) => {
-  const { silo1, silo2, trendData, alerts, dismissAlert, logData, MOISTURE_MIN, MOISTURE_MAX } = useSiloData();
+  const { silo1, silo2, trendData, logData, MOISTURE_MIN, MOISTURE_MAX } = useSiloData();
 
   const getStatus = (moisture: number) => {
     if (moisture > MOISTURE_MAX) return 'danger';
@@ -27,12 +26,9 @@ const Dashboard = ({ userName, onLogout }: DashboardProps) => {
   return (
     <div className="min-h-screen bg-background">
       <Header 
-        alertCount={alerts.length} 
         userName={userName}
         onLogout={onLogout}
       />
-      
-      <AlertNotification alerts={alerts} onDismiss={dismissAlert} />
 
       <main className="container px-4 py-6 space-y-6">
         {/* Real-time Status Banner */}
@@ -142,9 +138,7 @@ const Dashboard = ({ userName, onLogout }: DashboardProps) => {
         >
           <p className="text-sm text-center text-muted-foreground">
             <span className="font-semibold text-foreground">Standar Moisture:</span>{" "}
-            <span className="text-success">4.5% - 7%</span>{" "}
-            | Di bawah 4.5%: <span className="text-warning">Warning</span>{" "}
-            | Di atas 7%: <span className="text-destructive">Critical</span>
+            <span className="text-success">4.5% - 7%</span>
           </p>
         </motion.div>
 
