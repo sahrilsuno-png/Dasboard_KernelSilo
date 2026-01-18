@@ -18,6 +18,12 @@ export default {
         mono: ['JetBrains Mono', 'monospace'],
       },
       colors: {
+        // Palm Oil Factory Theme
+        palm: {
+          dark: "hsl(35, 30%, 15%)",
+          light: "hsl(80, 40%, 35%)",
+          gold: "hsl(45, 80%, 50%)",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

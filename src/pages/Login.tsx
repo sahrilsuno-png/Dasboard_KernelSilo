@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Droplets, Loader2 } from "lucide-react";
+import { Palmtree, Loader2, Factory, Thermometer, Droplets, FileSpreadsheet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
@@ -20,18 +20,31 @@ const Login = ({ onLogin }: LoginProps) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background Effects */}
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-palm-dark via-background to-palm-dark/50">
+      {/* Background Palm Pattern */}
+      <div className="absolute inset-0 overflow-hidden opacity-10">
+        <div className="absolute top-10 left-10">
+          <Palmtree className="w-32 h-32 text-palm-gold" />
+        </div>
+        <div className="absolute bottom-10 right-10">
+          <Palmtree className="w-48 h-48 text-palm-light" />
+        </div>
+        <div className="absolute top-1/2 right-1/4">
+          <Palmtree className="w-24 h-24 text-palm-gold" />
+        </div>
+      </div>
+
+      {/* Glow Effects */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-br from-primary/20 via-transparent to-transparent rounded-full blur-3xl" />
-        <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-gradient-to-tl from-moisture-low/20 via-transparent to-transparent rounded-full blur-3xl" />
+        <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-br from-palm-gold/20 via-transparent to-transparent rounded-full blur-3xl" />
+        <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-gradient-to-tl from-palm-light/20 via-transparent to-transparent rounded-full blur-3xl" />
       </div>
 
       <motion.div
         initial={{ opacity: 0, y: 20, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md glass-card p-8 relative z-10"
+        className="w-full max-w-md glass-card p-8 relative z-10 border-palm-gold/30"
       >
         {/* Logo & Title */}
         <div className="text-center mb-8">
@@ -39,18 +52,18 @@ const Login = ({ onLogin }: LoginProps) => {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: "spring", delay: 0.2 }}
-            className="inline-flex p-4 rounded-2xl bg-primary/20 mb-4"
+            className="inline-flex p-4 rounded-2xl bg-gradient-to-br from-palm-dark to-palm-light mb-4"
           >
-            <Droplets className="w-12 h-12 text-primary" />
+            <Palmtree className="w-12 h-12 text-palm-gold" />
           </motion.div>
           
           <motion.h1
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="text-2xl sm:text-3xl font-bold text-gradient-primary mb-2"
+            className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-palm-gold via-palm-light to-palm-gold bg-clip-text text-transparent mb-2"
           >
-            Palm Kernel Monitor
+            PKS Moisture Monitor
           </motion.h1>
           
           <motion.p
@@ -59,11 +72,11 @@ const Login = ({ onLogin }: LoginProps) => {
             transition={{ delay: 0.4 }}
             className="text-muted-foreground"
           >
-            Sistem Monitoring Moisture Silo Real-time
+            Sistem Monitoring Kernel Silo Pabrik Kelapa Sawit
           </motion.p>
         </div>
 
-        {/* Features Preview */}
+        {/* Features Preview - Palm Oil Factory Theme */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -71,19 +84,19 @@ const Login = ({ onLogin }: LoginProps) => {
           className="grid grid-cols-2 gap-3 mb-8"
         >
           {[
-            { label: 'Real-time Monitoring', icon: '📊' },
-            { label: '2 Silo Terintegrasi', icon: '🏭' },
-            { label: 'Alert Otomatis', icon: '🔔' },
-            { label: 'Grafik Trend', icon: '📈' },
+            { label: 'Monitoring Silo', icon: Factory, color: 'text-palm-gold' },
+            { label: 'Moisture Sensor', icon: Droplets, color: 'text-primary' },
+            { label: 'Suhu Real-time', icon: Thermometer, color: 'text-orange-400' },
+            { label: 'Export Logsheet', icon: FileSpreadsheet, color: 'text-palm-light' },
           ].map((feature, i) => (
             <motion.div
               key={feature.label}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.6 + i * 0.1 }}
-              className="flex items-center gap-2 p-3 rounded-lg bg-secondary/50"
+              className="flex items-center gap-2 p-3 rounded-lg bg-palm-dark/30 border border-palm-gold/20"
             >
-              <span className="text-xl">{feature.icon}</span>
+              <feature.icon className={`w-5 h-5 ${feature.color}`} />
               <span className="text-xs font-medium">{feature.label}</span>
             </motion.div>
           ))}
@@ -98,7 +111,7 @@ const Login = ({ onLogin }: LoginProps) => {
           <Button
             onClick={handleGoogleLogin}
             disabled={isLoading}
-            className="w-full h-14 text-base font-semibold gap-3 bg-foreground text-background hover:bg-foreground/90 transition-all duration-300"
+            className="w-full h-14 text-base font-semibold gap-3 bg-gradient-to-r from-palm-gold to-palm-light text-palm-dark hover:from-palm-gold/90 hover:to-palm-light/90 transition-all duration-300"
           >
             {isLoading ? (
               <Loader2 className="w-5 h-5 animate-spin" />
@@ -135,8 +148,19 @@ const Login = ({ onLogin }: LoginProps) => {
           transition={{ delay: 1 }}
           className="text-center text-xs text-muted-foreground mt-6"
         >
-          Gunakan akun Google Anda untuk mengakses sistem monitoring
+          Gunakan akun Google untuk mengakses sistem monitoring PKS
         </motion.p>
+
+        {/* Factory Badge */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.1 }}
+          className="flex items-center justify-center gap-2 mt-4 pt-4 border-t border-palm-gold/20"
+        >
+          <Factory className="w-4 h-4 text-palm-gold/50" />
+          <span className="text-xs text-palm-gold/50">Pabrik Kelapa Sawit - Kernel Processing</span>
+        </motion.div>
       </motion.div>
     </div>
   );

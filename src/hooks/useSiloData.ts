@@ -8,18 +8,11 @@ interface SiloData {
 
 interface TrendData {
   time: string;
+  timeLabel: string;
   silo1Moisture: number;
   silo2Moisture: number;
   silo1Temp: number;
   silo2Temp: number;
-}
-
-interface Alert {
-  id: string;
-  siloNumber: 1 | 2;
-  type: 'high' | 'low';
-  value: number;
-  timestamp: Date;
 }
 
 export interface LogEntry {
@@ -53,38 +46,9 @@ export const useSiloData = () => {
   });
 
   const [trendData, setTrendData] = useState<TrendData[]>([]);
-  const [alerts, setAlerts] = useState<Alert[]>([]);
   const [logData, setLogData] = useState<LogEntry[]>([]);
   
   const lastLogTimeRef = useRef<Date>(new Date());
-
-  // Check for alerts
-  const checkAlerts = useCallback((siloNumber: 1 | 2, moisture: number) => {
-    if (moisture > MOISTURE_MAX) {
-      const newAlert: Alert = {
-        id: `${siloNumber}-high-${Date.now()}`,
-        siloNumber,
-        type: 'high',
-        value: moisture,
-        timestamp: new Date(),
-      };
-      setAlerts(prev => [...prev.slice(-4), newAlert]); // Keep last 5 alerts
-    } else if (moisture < MOISTURE_MIN) {
-      const newAlert: Alert = {
-        id: `${siloNumber}-low-${Date.now()}`,
-        siloNumber,
-        type: 'low',
-        value: moisture,
-        timestamp: new Date(),
-      };
-      setAlerts(prev => [...prev.slice(-4), newAlert]);
-    }
-  }, []);
-
-  // Dismiss alert
-  const dismissAlert = useCallback((id: string) => {
-    setAlerts(prev => prev.filter(alert => alert.id !== id));
-  }, []);
 
   // Add log entry
   const addLogEntry = useCallback((s1: SiloData, s2: SiloData) => {
@@ -98,17 +62,35 @@ export const useSiloData = () => {
     setLogData(prev => [...prev, entry]);
   }, []);
 
-  // Initialize trend data and historical log data
+  // Initialize trend data with per-minute data for 2 hours (120 data points)
   useEffect(() => {
     const now = new Date();
     const initialData: TrendData[] = [];
     const initialLogData: LogEntry[] = [];
     
-    // Generate trend data for the last hour (12 points, every 5 minutes)
-    for (let i = 11; i >= 0; i--) {
-      const time = new Date(now.getTime() - i * 5 * 60 * 1000);
+    // Generate trend data for the last 2 hours (1 point per minute = 120 points)
+    for (let i = 119; i >= 0; i--) {
+      const time = new Date(now.getTime() - i * 60 * 1000); // Every 1 minute
+      const minutesAgo = i;
+      const hoursAgo = Math.floor(minutesAgo / 60);
+      const mins = minutesAgo % 60;
+      
+      // Create time label showing hours and minutes ago
+      let timeLabel = '';
+      if (hoursAgo > 0) {
+        timeLabel = `${hoursAgo}j ${mins}m lalu`;
+      } else if (mins > 0) {
+        timeLabel = `${mins}m lalu`;
+      } else {
+        timeLabel = 'Sekarang';
+      }
+      
+      // Display format for x-axis (show every 15 minutes)
+      const displayTime = time.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+      
       initialData.push({
-        time: time.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+        time: displayTime,
+        timeLabel: timeLabel,
         silo1Moisture: generateRandomValue(5.5, 1.5),
         silo2Moisture: generateRandomValue(6.0, 1.5),
         silo1Temp: generateRandomValue(42, 5),
@@ -133,7 +115,7 @@ export const useSiloData = () => {
     lastLogTimeRef.current = now;
   }, []);
 
-  // Simulate real-time data updates
+  // Simulate real-time data updates every minute
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date();
@@ -160,14 +142,12 @@ export const useSiloData = () => {
       };
       setSilo2(newSilo2);
 
-      // Check for alerts
-      checkAlerts(1, newSilo1Moisture);
-      checkAlerts(2, newSilo2Moisture);
-
-      // Update trend data
+      // Update trend data (add new point every minute, keep last 120 points for 2 hours)
       setTrendData(prev => {
+        const displayTime = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
         const newData = [...prev.slice(1), {
-          time: now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+          time: displayTime,
+          timeLabel: 'Sekarang',
           silo1Moisture: newSilo1Moisture,
           silo2Moisture: newSilo2Moisture,
           silo1Temp: newSilo1Temp,
@@ -182,17 +162,15 @@ export const useSiloData = () => {
         addLogEntry(newSilo1, newSilo2);
         lastLogTimeRef.current = now;
       }
-    }, 3000); // Update every 3 seconds
+    }, 60000); // Update every 1 minute for real per-minute data
 
     return () => clearInterval(interval);
-  }, [silo1.moisture, silo1.temperature, silo2.moisture, silo2.temperature, checkAlerts, addLogEntry]);
+  }, [silo1.moisture, silo1.temperature, silo2.moisture, silo2.temperature, addLogEntry]);
 
   return {
     silo1,
     silo2,
     trendData,
-    alerts,
-    dismissAlert,
     logData,
     MOISTURE_MIN,
     MOISTURE_MAX,
