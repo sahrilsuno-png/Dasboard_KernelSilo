@@ -6,7 +6,9 @@ import MoistureGauge from "@/components/MoistureGauge";
 import TrendChart from "@/components/TrendChart";
 import StatusCard from "@/components/StatusCard";
 import LogsheetExport from "@/components/LogsheetExport";
+import MoistureSettingsCard from "@/components/MoistureSettingsCard";
 import { useSiloData } from "@/hooks/useSiloData";
+import { useMoistureSettings } from "@/hooks/useMoistureSettings";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface DashboardProps {
@@ -15,11 +17,12 @@ interface DashboardProps {
 }
 
 const Dashboard = ({ userName, onLogout }: DashboardProps) => {
-  const { silo1, silo2, trendData, logData, MOISTURE_MIN, MOISTURE_MAX } = useSiloData();
+  const { silo1, silo2, trendData, logData } = useSiloData();
+  const { moistureMin, moistureMax, isSaving, saveSettings, isLoading } = useMoistureSettings();
 
   const getStatus = (moisture: number) => {
-    if (moisture > MOISTURE_MAX) return 'danger';
-    if (moisture < MOISTURE_MIN) return 'warning';
+    if (moisture > moistureMax) return 'danger';
+    if (moisture < moistureMin) return 'warning';
     return 'normal';
   };
 
@@ -58,13 +61,17 @@ const Dashboard = ({ userName, onLogout }: DashboardProps) => {
               siloNumber={1}
               moisture={silo1.moisture}
               temperature={silo1.temperature}
-              isAlert={silo1.moisture > MOISTURE_MAX || silo1.moisture < MOISTURE_MIN}
+              isAlert={silo1.moisture > moistureMax || silo1.moisture < moistureMin}
+              moistureMin={moistureMin}
+              moistureMax={moistureMax}
             />
             <SiloVisualization
               siloNumber={2}
               moisture={silo2.moisture}
               temperature={silo2.temperature}
-              isAlert={silo2.moisture > MOISTURE_MAX || silo2.moisture < MOISTURE_MIN}
+              isAlert={silo2.moisture > moistureMax || silo2.moisture < moistureMin}
+              moistureMin={moistureMin}
+              moistureMax={moistureMax}
             />
           </div>
         </section>
@@ -115,32 +122,27 @@ const Dashboard = ({ userName, onLogout }: DashboardProps) => {
               label="Silo 1"
               minValue={0}
               maxValue={10}
-              warningLow={MOISTURE_MIN}
-              warningHigh={MOISTURE_MAX}
+              warningLow={moistureMin}
+              warningHigh={moistureMax}
             />
             <MoistureGauge
               value={silo2.moisture}
               label="Silo 2"
               minValue={0}
               maxValue={10}
-              warningLow={MOISTURE_MIN}
-              warningHigh={MOISTURE_MAX}
+              warningLow={moistureMin}
+              warningHigh={moistureMax}
             />
           </div>
         </section>
 
-        {/* Standard Info */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="p-4 rounded-xl bg-secondary/50 border border-border"
-        >
-          <p className="text-sm text-center text-muted-foreground">
-            <span className="font-semibold text-foreground">Standar Moisture:</span>{" "}
-            <span className="text-success">4.5% - 7%</span>
-          </p>
-        </motion.div>
+        {/* Moisture Standard Settings */}
+        <MoistureSettingsCard
+          moistureMin={moistureMin}
+          moistureMax={moistureMax}
+          onSave={saveSettings}
+          isSaving={isSaving}
+        />
 
         {/* Trend Charts */}
         <section>
@@ -154,7 +156,12 @@ const Dashboard = ({ userName, onLogout }: DashboardProps) => {
               <TabsTrigger value="temperature">Suhu</TabsTrigger>
             </TabsList>
             <TabsContent value="moisture">
-              <TrendChart data={trendData} type="moisture" />
+              <TrendChart 
+                data={trendData} 
+                type="moisture" 
+                moistureMin={moistureMin}
+                moistureMax={moistureMax}
+              />
             </TabsContent>
             <TabsContent value="temperature">
               <TrendChart data={trendData} type="temperature" />
@@ -190,11 +197,11 @@ const Dashboard = ({ userName, onLogout }: DashboardProps) => {
             </div>
             <div className="flex items-center gap-2">
               <div className="w-4 h-0.5 bg-destructive" style={{ borderTop: '2px dashed' }} />
-              <span>Batas Atas (7%)</span>
+              <span>Batas Atas ({moistureMax}%)</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-4 h-0.5 bg-warning" style={{ borderTop: '2px dashed' }} />
-              <span>Batas Bawah (4.5%)</span>
+              <span>Batas Bawah ({moistureMin}%)</span>
             </div>
           </div>
         </motion.div>

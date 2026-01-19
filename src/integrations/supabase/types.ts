@@ -44,6 +44,30 @@ export type Database = {
         }
         Relationships: []
       }
+      moisture_settings: {
+        Row: {
+          created_at: string
+          id: string
+          max_moisture: number
+          min_moisture: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          max_moisture?: number
+          min_moisture?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          max_moisture?: number
+          min_moisture?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

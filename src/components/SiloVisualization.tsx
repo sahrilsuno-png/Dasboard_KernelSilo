@@ -6,16 +6,18 @@ interface SiloVisualizationProps {
   moisture: number;
   temperature: number;
   isAlert: boolean;
+  moistureMin?: number;
+  moistureMax?: number;
 }
 
-const SiloVisualization = ({ siloNumber, moisture, temperature, isAlert }: SiloVisualizationProps) => {
+const SiloVisualization = ({ siloNumber, moisture, temperature, isAlert, moistureMin = 4.5, moistureMax = 7 }: SiloVisualizationProps) => {
   // Calculate fill level based on moisture (visual representation)
   const fillLevel = Math.min(Math.max((moisture / 10) * 100, 10), 95);
   
-  // Determine status
+  // Determine status based on dynamic thresholds
   const getStatus = () => {
-    if (moisture > 7) return 'danger';
-    if (moisture < 4.5) return 'warning';
+    if (moisture > moistureMax) return 'danger';
+    if (moisture < moistureMin) return 'warning';
     return 'normal';
   };
 
