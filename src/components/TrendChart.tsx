@@ -11,9 +11,11 @@ interface TrendChartProps {
     silo2Temp: number;
   }>;
   type: 'moisture' | 'temperature';
+  moistureMin?: number;
+  moistureMax?: number;
 }
 
-const TrendChart = ({ data, type }: TrendChartProps) => {
+const TrendChart = ({ data, type, moistureMin = 4.5, moistureMax = 7 }: TrendChartProps) => {
   const isMoisture = type === 'moisture';
 
   return (
@@ -93,8 +95,8 @@ const TrendChart = ({ data, type }: TrendChartProps) => {
           />
           {isMoisture && (
             <>
-              <ReferenceLine y={7} stroke="hsl(0, 72%, 51%)" strokeDasharray="5 5" label={{ value: '7%', position: 'right', fontSize: 10, fill: 'hsl(0, 72%, 51%)' }} />
-              <ReferenceLine y={4.5} stroke="hsl(38, 92%, 50%)" strokeDasharray="5 5" label={{ value: '4.5%', position: 'right', fontSize: 10, fill: 'hsl(38, 92%, 50%)' }} />
+              <ReferenceLine y={moistureMax} stroke="hsl(0, 72%, 51%)" strokeDasharray="5 5" label={{ value: `${moistureMax}%`, position: 'right', fontSize: 10, fill: 'hsl(0, 72%, 51%)' }} />
+              <ReferenceLine y={moistureMin} stroke="hsl(38, 92%, 50%)" strokeDasharray="5 5" label={{ value: `${moistureMin}%`, position: 'right', fontSize: 10, fill: 'hsl(38, 92%, 50%)' }} />
             </>
           )}
           <Area
